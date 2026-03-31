@@ -57,10 +57,10 @@
 }
 
 .tag-live, .tag-history {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 100px;
+  padding: 2px 8px;
+  border-radius: 4px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -81,10 +81,10 @@
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: var(--text-primary);
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 100px;
+  padding: 2px 8px;
+  border-radius: 4px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   cursor: pointer;
