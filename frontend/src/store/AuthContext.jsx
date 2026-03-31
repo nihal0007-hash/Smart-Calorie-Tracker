@@ -7,6 +7,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [token, setToken] = useState(localStorage.getItem('token'))
   const [loading, setLoading] = useState(true)
+  const [serverWakingUp, setServerWakingUp] = useState(false)
 
   useEffect(() => {
     if (token) {
@@ -35,7 +36,7 @@ export function AuthProvider({ children }) {
     getMe().then((res) => setUser(res.data))
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, logout, setUser, refreshUser }}>
+    <AuthContext.Provider value={{ user, token, loading, serverWakingUp, setServerWakingUp, login, logout, setUser, refreshUser }}>
       {children}
     </AuthContext.Provider>
   )

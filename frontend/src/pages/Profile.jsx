@@ -71,7 +71,15 @@ export default function Profile() {
   const [showDiseaseAdd, setShowDiseaseAdd] = useState(false)
   const [showAllergyAdd, setShowAllergyAdd] = useState(false)
 
-  if (!form) return <div className="page page-with-nav loading-overlay"><div className="spinner" /></div>
+  if (!form) {
+    return (
+      <div className="page page-with-nav loading-overlay">
+        <div className="spinner" />
+        <div className="text-secondary mt-4 animate-fade-in">Loading your profile...</div>
+        <div className="text-muted text-xs mt-2 opacity-50">Free-tier server may take a moment to wake up</div>
+      </div>
+    )
+  }
 
   const bmi = form.height_cm && form.weight_kg
     ? (form.weight_kg / Math.pow(form.height_cm / 100, 2)).toFixed(1) : '—'

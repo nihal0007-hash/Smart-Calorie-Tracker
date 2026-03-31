@@ -24,11 +24,21 @@ function OnboardingRoute({ children }) {
   return children
 }
 
+import { useEffect } from 'react'
+import { registerWakingStateSetter } from './services/api'
+import ServerWakeUpOverlay from './components/ServerWakeUpOverlay'
+
 function AppLayout({ children }) {
-  const { token } = useAuth()
+  const { token, serverWakingUp, setServerWakingUp } = useAuth()
+
+  useEffect(() => {
+    registerWakingStateSetter(setServerWakingUp)
+  }, [setServerWakingUp])
+
   return (
     <>
       {token && <Navbar />}
+      <ServerWakeUpOverlay isOpen={serverWakingUp} />
       {children}
     </>
   )

@@ -35,7 +35,15 @@ export default function Dashboard() {
     return 'Good Evening'
   }
 
-  if (loading) return <div className="page page-with-nav loading-overlay"><div className="spinner" /></div>
+  if (loading) {
+    return (
+      <div className="page page-with-nav loading-overlay">
+        <div className="spinner" />
+        <div className="text-secondary mt-4 animate-fade-in">Fetching your daily stats...</div>
+        <div className="text-muted text-xs mt-2 opacity-50">Free-tier server may take a moment to wake up</div>
+      </div>
+    )
+  }
 
   const cal = summary?.total_calories || 0
   const goal = summary?.calorie_goal || 2000

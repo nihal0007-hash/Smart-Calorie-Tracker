@@ -74,7 +74,7 @@ export default function AuthPage() {
           {error && <div className="auth-error">{error}</div>}
 
           <button id="auth-submit" className="btn btn-primary btn-full" type="submit" disabled={loading}>
-            {loading ? 'Please wait...' : tab === 'login' ? 'Sign In' : 'Create Account'}
+            {loading ? 'Connecting to server...' : tab === 'login' ? 'Sign In' : 'Create Account'}
           </button>
         </form>
 

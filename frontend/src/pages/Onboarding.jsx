@@ -172,7 +172,7 @@ export default function Onboarding() {
               <button type="button" className="btn btn-secondary" onClick={() => setStep((s) => s - 1)}>Back</button>
             )}
             <button id="ob-next" type="submit" className="btn btn-primary" style={{ flex: 1 }} disabled={loading}>
-              {loading ? 'Saving...' : step === STEPS.length - 1 ? '🚀 Complete Setup' : 'Continue →'}
+              {loading ? 'Finalizing profile...' : step === STEPS.length - 1 ? '🚀 Complete Setup' : 'Continue →'}
             </button>
           </div>
         </form>

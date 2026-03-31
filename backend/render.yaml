@@ -1,0 +1,31 @@
+# Exported from Render on 2026-03-31T16:13:19Z
+version: "1"
+projects:
+- name: My project
+  environments:
+  - name: Production
+    services:
+    - type: web
+      name: Smart-Calorie-Tracker-Backend
+      runtime: python
+      pythonVersion: 3.11.9
+      repo: https://github.com/nihal0007-hash/Smart-Calorie-Tracker
+      plan: free
+      envVars:
+      - key: FRONTEND_URL
+        sync: false
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        sync: false
+      - key: ALGORITHM
+        sync: false
+      - key: SECRET_KEY
+        sync: false
+      - key: MONGODB_URI
+        sync: false
+      region: oregon
+      buildCommand: pip install -r requirements.txt
+      startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+      autoDeployTrigger: commit
+      rootDir: ./backend

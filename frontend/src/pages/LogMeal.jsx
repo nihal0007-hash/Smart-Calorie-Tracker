@@ -95,7 +95,7 @@ export default function LogMeal() {
                 {loading ? (
                   <span className="flex items-center gap-2 justify-center">
                     <span className="spinner" style={{ width: 20, height: 20, borderWidth: 2 }} />
-                    Analyzing with Gemini AI...
+                    Waking up AI analyzer...
                   </span>
                 ) : '🤖 Analyze Meal'}
               </button>
