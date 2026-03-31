@@ -6,8 +6,14 @@ from app.models.meal_log import MealLog
 
 
 async def init_db():
-    client = AsyncIOMotorClient(settings.MONGODB_URI)
-    await init_beanie(
-        database=client.calorie_tracker,
-        document_models=[User, MealLog],
-    )
+    try:
+        print(f"Connecting to MongoDB at: {settings.MONGODB_URI[:20]}...")
+        client = AsyncIOMotorClient(settings.MONGODB_URI)
+        await init_beanie(
+            database=client.calorie_tracker,
+            document_models=[User, MealLog],
+        )
+        print("Connected to MongoDB successfully via Beanie!")
+    except Exception as e:
+        print(f"FAILED to connect to MongoDB: {type(e).__name__}: {e}")
+        raise e

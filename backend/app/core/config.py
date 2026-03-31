@@ -4,9 +4,9 @@ from functools import lru_cache
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file="../.env",
-        extra="ignore",
-        case_sensitive=True
+        env_file=".env",  # Assumes running from the directory where .env is (usually backend root)
+        env_file_encoding="utf-8",
+        extra="ignore"
     )
     MONGODB_URI: str = "mongodb://localhost:27017/calorie_tracker"
     SECRET_KEY: str = "change-this-in-production"
