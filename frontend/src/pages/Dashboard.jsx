@@ -10,7 +10,13 @@ import './Dashboard.css'
 export default function Dashboard() {
   const { user } = useAuth()
   const getTodayIST = () => new Date().toLocaleDateString('en-CA')
-  const [selectedDate, setSelectedDate] = useState(getTodayIST())
+  const [selectedDate, setSelectedDate] = useState(() => {
+    return sessionStorage.getItem('dashboardDate') || getTodayIST()
+  })
+
+  useEffect(() => {
+    sessionStorage.setItem('dashboardDate', selectedDate)
+  }, [selectedDate])
   const [summary, setSummary] = useState(null)
   const [weekly, setWeekly] = useState(null)
   const [meals, setMeals] = useState([])
