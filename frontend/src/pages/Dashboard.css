@@ -69,12 +69,14 @@
   background: rgba(0, 212, 170, 0.1);
   color: var(--accent);
   border: 1px solid rgba(0, 212, 170, 0.3);
+  border-radius:4px;
 }
 
 .tag-history {
   background: rgba(139, 92, 246, 0.1);
   color: #a78bfa;
   border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius:4px;
 }
 
 .tag-reset-btn {
