@@ -120,15 +120,24 @@ export default function LogMeal() {
               </div>
 
               <div className="form-group">
-                <label className="form-label">Packaging / Label Images <span className="text-muted">(optional)</span></label>
+                <label className="form-label">Nutrition Label Images <span className="text-muted">(optional)</span></label>
                 <div className="image-upload-container">
-                  <label className="image-upload-label">
-                    <input type="file" accept="image/*" multiple onChange={handleImageChange} hidden />
-                    <div className="image-upload-placeholder">
-                      <span>📸</span>
-                      <span>Add Labels or Brands</span>
-                    </div>
-                  </label>
+                  <div className="image-upload-actions">
+                    <label className="image-upload-label desktop-hide">
+                      <input type="file" accept="image/*" capture="environment" onChange={handleImageChange} hidden />
+                      <div className="image-upload-placeholder">
+                        <span style={{ fontSize: '1.5rem' }}>📸</span>
+                        <span>Take Photo</span>
+                      </div>
+                    </label>
+                    <label className="image-upload-label">
+                      <input type="file" accept="image/*" multiple onChange={handleImageChange} hidden />
+                      <div className="image-upload-placeholder">
+                        <span style={{ fontSize: '1.5rem' }}>📁</span>
+                        <span>Choose File</span>
+                      </div>
+                    </label>
+                  </div>
                   
                   {imagePreviews.length > 0 && (
                     <div className="image-previews">
