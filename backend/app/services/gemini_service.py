@@ -40,10 +40,16 @@ async def _get_model():
     return genai.GenerativeModel(_cached_working_model)
 
 
-def _build_prompt(meal_name: str, meal_description: str, user_profile: dict) -> str:
+def _build_prompt(meal_name: str, meal_description: str, user_profile: dict, has_images: bool) -> str:
     diseases = ", ".join(user_profile.get("diseases", [])) or "None"
     allergies = ", ".join(user_profile.get("allergies", [])) or "None"
+    
+    image_context = ""
+    if has_images:
+        image_context = "I have attached images of the nutrition labels/packaging for this meal. Please use the data from these images for maximum precision in your analysis. If the images contain a dish/plate of food instead of a label, prioritize the text description but you may use the image as secondary context."
+
     return f"""You are a professional nutritionist AI. Analyze the meal below for the given user profile.
+{image_context}
 Return ONLY a valid JSON object. No markdown, no extra text.
 
 MEAL: {meal_name}
@@ -82,11 +88,33 @@ def _parse_response(text: str) -> dict:
     return json.loads(text.strip())
 
 
-async def analyze_meal(meal_name: str, meal_description: str, user_profile: dict) -> dict:
-    prompt = _build_prompt(meal_name, meal_description, user_profile)
+async def analyze_meal(meal_name: str, meal_description: str, user_profile: dict, images: list[str] = None) -> dict:
+    prompt = _build_prompt(meal_name, meal_description, user_profile, bool(images))
+    
+    # Prepare content parts
+    content = [prompt]
+    if images:
+        for img_base64 in images:
+            try:
+                # Remove data:image/...;base64, prefix if present
+                if "," in img_base64:
+                    header, data = img_base64.split(",", 1)
+                    mime_type = header.split(";")[0].split(":")[1]
+                else:
+                    data = img_base64
+                    mime_type = "image/jpeg" # Fallback
+                
+                content.append({
+                    "mime_type": mime_type,
+                    "data": data
+                })
+            except Exception as e:
+                print(f"Error processing image part: {e}")
+
     try:
         model = await _get_model()
-        response = await asyncio.to_thread(model.generate_content, prompt)
+        # model.generate_content can take a list of parts (text and images)
+        response = await asyncio.to_thread(model.generate_content, content)
         return _parse_response(response.text)
     except Exception as e:
         print(f"Gemini Analysis Error: {type(e).__name__}: {e}")

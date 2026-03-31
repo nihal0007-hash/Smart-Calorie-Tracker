@@ -19,13 +19,36 @@ export default function LogMeal() {
   const navigate = useNavigate()
 
   const set = (k) => (e) => setForm((p) => ({ ...p, [k]: e.target.value }))
+  const [images, setImages] = useState([]) // Array of base64 strings
+  const [imagePreviews, setImagePreviews] = useState([])
+
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files)
+    if (files.length + images.length > 3) {
+      return setError('You can upload up to 3 images.')
+    }
+
+    files.forEach((file) => {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setImagePreviews((prev) => [...prev, reader.result])
+        setImages((prev) => [...prev, reader.result])
+      }
+      reader.readAsDataURL(file)
+    })
+  }
+
+  const removeImage = (index) => {
+    setImagePreviews((prev) => prev.filter((_, i) => i !== index))
+    setImages((prev) => prev.filter((_, i) => i !== index))
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
     setError('')
     try {
-      const { data } = await analyzeMeal(form)
+      const { data } = await analyzeMeal({ ...form, images })
       setResult(data)
     } catch (err) {
       setError(err.response?.data?.detail || 'Analysis failed. Please try again.')
@@ -37,7 +60,9 @@ export default function LogMeal() {
   const handleConfirm = async () => {
     setLoading(true)
     try {
-      await logMeal(result)
+      // Don't log the images to the DB as per privacy requirement
+      const { images: _, ...dataToLog } = result
+      await logMeal(dataToLog)
       navigate('/dashboard')
     } catch (err) {
       setError('Could not save meal to tracker.')
@@ -45,7 +70,12 @@ export default function LogMeal() {
     }
   }
 
-  const resetForm = () => { setForm({ meal_name: '', meal_description: '', meal_type: 'snack' }); setResult(null) }
+  const resetForm = () => { 
+    setForm({ meal_name: '', meal_description: '', meal_type: 'snack' })
+    setResult(null)
+    setImages([])
+    setImagePreviews([])
+  }
 
   return (
     <div className="page page-with-nav">
@@ -87,6 +117,38 @@ export default function LogMeal() {
                 <textarea id="lm-desc" className="form-textarea"
                   placeholder="e.g. 1 large plate, extra ghee, with raita and papad..."
                   value={form.meal_description} onChange={set('meal_description')} rows={3} />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Packaging / Label Images <span className="text-muted">(optional)</span></label>
+                <div className="image-upload-container">
+                  <label className="image-upload-label">
+                    <input type="file" accept="image/*" multiple onChange={handleImageChange} hidden />
+                    <div className="image-upload-placeholder">
+                      <span>📸</span>
+                      <span>Add Labels or Brands</span>
+                    </div>
+                  </label>
+                  
+                  {imagePreviews.length > 0 && (
+                    <div className="image-previews">
+                      {imagePreviews.map((src, i) => (
+                        <div key={i} className="image-preview-item">
+                          <img src={src} alt="preview" />
+                          <button type="button" className="remove-image" onClick={() => removeImage(i)}>✕</button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                
+                <div className="disclaimer-box mt-4">
+                  <p className="text-xs text-muted">
+                    <strong>Disclaimer:</strong> AI analysis is most accurate with nutrition labels or brand packaging. 
+                    Please <strong>avoid uploading pictures of the actual food dish</strong>. 
+                    Images are processed for analysis and are <strong>not stored</strong> in our database.
+                  </p>
+                </div>
               </div>
 
               {error && <div className="form-error" style={{ padding: '10px 14px', background: 'rgba(239,68,68,0.1)', borderRadius: 8 }}>{error}</div>}

@@ -42,7 +42,12 @@ async def analyze_pre_log(data: MealLogRequest, current_user: User = Depends(get
         "diseases": current_user.diseases, "allergies": current_user.allergies,
         "daily_calorie_goal": current_user.daily_calorie_goal,
     }
-    analysis = await analyze_meal(data.meal_name, data.meal_description or "", user_profile)
+    analysis = await analyze_meal(
+        data.meal_name, 
+        data.meal_description or "", 
+        user_profile,
+        data.images
+    )
     return {**data.dict(), **analysis}
 
 

@@ -6,6 +6,7 @@ class MealLogRequest(BaseModel):
     meal_name: str
     meal_description: Optional[str] = None
     meal_type: str = "snack"
+    images: Optional[List[str]] = None
 
 
 class MealLogCreate(BaseModel):
