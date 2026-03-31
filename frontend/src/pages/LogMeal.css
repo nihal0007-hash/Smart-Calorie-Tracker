@@ -30,9 +30,9 @@
 .result-macro small { font-size: 0.65rem; color: var(--text-muted); }
 
 .warning-item {
-  padding: 10px 14px; border-radius: 8px;
+  padding: 10px 14px; border-radius: 6px;
   background: rgba(245,158,11,0.08); border-left: 3px solid var(--warning);
-  color: var(--text-secondary); font-size: 0.875rem;
+  color: var(--text-secondary); font-size: 0.8rem;
 }
 
 .result-actions { display: flex; gap: 12px; flex-wrap: wrap; }

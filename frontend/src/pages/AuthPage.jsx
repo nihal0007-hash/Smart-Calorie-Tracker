@@ -38,7 +38,7 @@ export default function AuthPage() {
       <div className="auth-card animate-fade-in">
         <div className="auth-brand">
           <span style={{ fontSize: '2rem' }}>🥗</span>
-          <h1 className="gradient-text" style={{ fontSize: '1.8rem' }}>CalorieAI</h1>
+          <h1 className="gradient-text" style={{ fontSize: '1.8rem' }}>Smart Calorie Tracker</h1>
           <p className="text-secondary text-sm">AI-powered nutrition tracking</p>
         </div>
 

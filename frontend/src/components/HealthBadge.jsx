@@ -6,13 +6,13 @@ export default function HealthBadge({ score, isSuitable, size = 'md' }) {
   const label = isGood ? 'Excellent' : isOk ? 'Moderate' : 'Poor'
   const emoji = isGood ? '✅' : isOk ? '⚠️' : '❌'
 
-  const padding = size === 'sm' ? '4px 10px' : '6px 14px'
-  const fontSize = size === 'sm' ? '0.75rem' : '0.875rem'
+  const padding = size === 'sm' ? '3px 8px' : '5px 12px'
+  const fontSize = size === 'sm' ? '0.7rem' : '0.8rem'
 
   return (
     <span style={{
       display: 'inline-flex', alignItems: 'center', gap: 6,
-      padding, borderRadius: 100, fontSize, fontWeight: 600,
+      padding, borderRadius: 8, fontSize, fontWeight: 600,
       color, background: bg, border: `1px solid ${color}30`,
     }}>
       {emoji} {label} ({score}/10)
