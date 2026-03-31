@@ -88,6 +88,10 @@ def _parse_response(text: str) -> dict:
     return json.loads(text.strip())
 
 
+from app.services.ai_limiter import ai_limiter
+from fastapi import HTTPException
+
+
 async def analyze_meal(meal_name: str, meal_description: str, user_profile: dict, images: list[str] = None) -> dict:
     prompt = _build_prompt(meal_name, meal_description, user_profile, bool(images))
     
@@ -113,9 +117,25 @@ async def analyze_meal(meal_name: str, meal_description: str, user_profile: dict
 
     try:
         model = await _get_model()
-        # model.generate_content can take a list of parts (text and images)
+
+        # Token Tracking & Rate Limiting
+        # Pre-count tokens to be safe
+        token_count_obj = await asyncio.to_thread(model.count_tokens, content)
+        request_tokens = getattr(token_count_obj, "total_tokens", 500) # Fallback to 500 if unknown
+
+        # Check limits before calling the API
+        ai_limiter.check_limits(request_tokens)
+
+        # Performance the generation
         response = await asyncio.to_thread(model.generate_content, content)
+        
+        # Log successful request
+        ai_limiter.log_request(request_tokens)
+        
         return _parse_response(response.text)
+    except HTTPException as he:
+        # Re-raise rate limit exceptions
+        raise he
     except Exception as e:
         print(f"Gemini Analysis Error: {type(e).__name__}: {e}")
         # Return fallback values but with the error logged
