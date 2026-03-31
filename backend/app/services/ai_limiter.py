@@ -36,7 +36,7 @@ class AILimiter:
         if len(self.requests_timestamps) >= self.rpm_limit:
             raise HTTPException(
                 status_code=429, 
-                detail="the AI model free tier quota has crossed its limit - pls try after some time."
+                detail="the AI model has reached its limit, pls try later"
             )
 
         # 3. Check TPM
@@ -44,14 +44,14 @@ class AILimiter:
         if current_tpm + estimated_tokens > self.tpm_limit:
             raise HTTPException(
                 status_code=429, 
-                detail="the AI model free tier quota has crossed its limit - pls try after some time."
+                detail="the AI model has reached its limit, pls try later"
             )
 
         # 4. Check RPD
         if len(self.daily_requests_timestamps) >= self.rpd_limit:
             raise HTTPException(
                 status_code=429, 
-                detail="the AI model free tier quota has crossed its limit - pls try after some time."
+                detail="the AI model has reached its limit, pls try later"
             )
 
     def log_request(self, tokens: int):

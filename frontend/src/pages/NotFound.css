@@ -1,0 +1,34 @@
+.notfound-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.notfound-card {
+  padding: 40px;
+  max-width: 480px;
+  width: 100%;
+}
+
+.notfound-icon {
+  font-size: 4rem;
+  margin-bottom: 24px;
+  animation: floatIcon 3s ease-in-out infinite;
+}
+
+@keyframes floatIcon {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.notfound-card h1 {
+  font-size: 6rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.notfound-card h2 {
+  color: var(--text-secondary);
+}

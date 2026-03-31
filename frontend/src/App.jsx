@@ -6,6 +6,7 @@ import Onboarding from './pages/Onboarding'
 import Dashboard from './pages/Dashboard'
 import LogMeal from './pages/LogMeal'
 import Profile from './pages/Profile'
+import NotFound from './pages/NotFound'
 import Navbar from './components/Navbar'
 
 function ProtectedRoute({ children }) {
@@ -60,7 +61,7 @@ export default function App() {
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/log-meal" element={<ProtectedRoute><LogMeal /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </AppLayout>
       </AuthProvider>

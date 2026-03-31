@@ -3,6 +3,8 @@ import re
 import asyncio
 import google.generativeai as genai
 from app.core.config import settings
+from app.services.ai_limiter import ai_limiter
+from fastapi import HTTPException
 
 genai.configure(api_key=settings.GOOGLE_API_KEY)
 
@@ -88,10 +90,6 @@ def _parse_response(text: str) -> dict:
     return json.loads(text.strip())
 
 
-from app.services.ai_limiter import ai_limiter
-from fastapi import HTTPException
-
-
 async def analyze_meal(meal_name: str, meal_description: str, user_profile: dict, images: list[str] = None) -> dict:
     prompt = _build_prompt(meal_name, meal_description, user_profile, bool(images))
     
@@ -138,12 +136,8 @@ async def analyze_meal(meal_name: str, meal_description: str, user_profile: dict
         raise he
     except Exception as e:
         print(f"Gemini Analysis Error: {type(e).__name__}: {e}")
-        # Return fallback values but with the error logged
-        return {
-            "calories": 250, "protein_g": 10, "carbs_g": 30, "fat_g": 8,
-            "sugar_g": 4, "fiber_g": 2, "sodium_mg": 400, "oil_content": "low",
-            "health_score": 5, "is_suitable": True,
-            "warnings": ["AI analysis service currently unavailable. Using estimated defaults."], 
-            "benefits": ["Estimation provided"],
-            "ai_summary": "System is currently estimating nutritional values. Please verify manually.",
-        }
+        # Instead of fallbacks, we now let the user know the service is hit or down
+        raise HTTPException(
+            status_code=429, 
+            detail="the AI model has reached its limit, pls try later"
+        )
