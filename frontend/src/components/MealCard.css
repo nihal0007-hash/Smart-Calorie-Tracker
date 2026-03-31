@@ -21,6 +21,13 @@
 }
 .meal-summary { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.5; padding: 12px; background: rgba(0,212,170,0.04); border-radius: 10px; border-left: 3px solid var(--accent); }
 .meal-warnings, .meal-benefits { display: flex; flex-wrap: wrap; gap: 6px; }
+.meal-card-actions { 
+  display: flex; 
+  justify-content: flex-end; 
+  margin-top: 16px; 
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
 
 @media (max-width: 480px) {
   .meal-card-header { padding: 14px 16px; }

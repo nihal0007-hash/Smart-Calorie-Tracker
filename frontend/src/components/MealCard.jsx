@@ -5,6 +5,7 @@ import './MealCard.css'
 
 export default function MealCard({ meal, onDelete }) {
   const [expanded, setExpanded] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
   const [deleting, setDeleting] = useState(false)
 
   const time = new Date(meal.logged_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -13,8 +14,13 @@ export default function MealCard({ meal, onDelete }) {
 
   const handleDelete = async () => {
     setDeleting(true)
-    try { await deleteMeal(meal.id); onDelete?.(meal.id) }
-    catch { setDeleting(false) }
+    try { 
+      await deleteMeal(meal.id)
+      onDelete?.(meal.id) 
+    } catch { 
+      setDeleting(false) 
+      setShowConfirm(false)
+    }
   }
 
   return (
@@ -75,9 +81,22 @@ export default function MealCard({ meal, onDelete }) {
             </div>
           )}
 
-          <button className="btn btn-danger btn-sm" onClick={handleDelete} disabled={deleting}>
-            {deleting ? 'Deleting...' : '🗑 Remove Meal'}
-          </button>
+          <div className="meal-card-actions">
+            {!showConfirm ? (
+              <button className="btn btn-danger btn-sm" onClick={() => setShowConfirm(true)}>
+                🗑 Remove Meal
+              </button>
+            ) : (
+              <div className="flex items-center gap-2">
+                <button className="btn btn-danger btn-sm" onClick={handleDelete} disabled={deleting}>
+                  {deleting ? 'Deleting...' : 'Confirm Delete'}
+                </button>
+                <button className="btn btn-secondary btn-sm" onClick={() => setShowConfirm(false)} disabled={deleting}>
+                  Cancel
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>

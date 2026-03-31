@@ -4,18 +4,18 @@ from fastapi import HTTPException
 
 class AILimiter:
     def __init__(self):
-        # RPM: 5 requests per minute
-        self.rpm_limit = 5
+        # RPM: 15 requests per minute (Standard Flash Free Tier)
+        self.rpm_limit = 15
         self.rpm_window = 60 # seconds
         self.requests_timestamps = deque()
 
-        # TPM: 250K tokens per minute
-        self.tpm_limit = 250000
+        # TPM: 1M tokens per minute
+        self.tpm_limit = 1000000
         self.tpm_window = 60 # seconds
         self.token_usage = deque() # holds tuples of (timestamp, token_count)
 
-        # RPD: 20 requests per day
-        self.rpd_limit = 20
+        # RPD: 1500 requests per day
+        self.rpd_limit = 1500
         self.rpd_window = 86400 # 24 hours in seconds
         self.daily_requests_timestamps = deque()
 

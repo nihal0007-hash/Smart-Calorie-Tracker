@@ -45,12 +45,12 @@ export const updateProfile = (data) => api.put('/profile/', data)
 // Meals
 export const analyzeMeal = (data) => api.post('/meals/analyze', data)
 export const logMeal = (data) => api.post('/meals/log', data)
-export const getTodayMeals = () => api.get('/meals/today')
+export const getTodayMeals = (date) => api.get(`/meals/today${date ? `?date=${date}` : ''}`)
 export const getMealHistory = (days = 7) => api.get(`/meals/history?days=${days}`)
 export const deleteMeal = (id) => api.delete(`/meals/${id}`)
 
 // Dashboard
-export const getDashboardSummary = () => api.get('/dashboard/summary')
+export const getDashboardSummary = (date) => api.get(`/dashboard/summary${date ? `?date=${date}` : ''}`)
 export const getWeeklyData = () => api.get('/dashboard/weekly')
 
 export default api

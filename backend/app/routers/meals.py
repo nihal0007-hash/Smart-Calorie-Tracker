@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from datetime import datetime, timedelta
+from app.core.timezone import ist_today, date_to_ist_range, get_now_ist
 from beanie import PydanticObjectId
 from app.models.meal_log import MealLog
 from app.models.user import User
@@ -10,11 +11,7 @@ from app.services.gemini_service import analyze_meal
 router = APIRouter(prefix="/meals", tags=["meals"])
 
 
-def _today_range():
-    today = datetime.utcnow().date()
-    start = datetime(today.year, today.month, today.day, 0, 0, 0)
-    end = datetime(today.year, today.month, today.day, 23, 59, 59)
-    return start, end
+# Helper removed, now using date_to_ist_range from timezone utility
 
 
 def _meal_dict(m: MealLog) -> dict:
@@ -55,15 +52,23 @@ async def analyze_pre_log(data: MealLogRequest, current_user: User = Depends(get
 async def log_meal(meal_data: MealLogCreate, current_user: User = Depends(get_approved_user)):
     meal = MealLog(
         user_id=current_user.id, 
-        **meal_data.dict()
+        **meal_data.dict(exclude_unset=True)
     )
     await meal.insert()
     return _meal_dict(meal)
 
 
 @router.get("/today")
-async def get_today_meals(current_user: User = Depends(get_approved_user)):
-    start, end = _today_range()
+async def get_today_meals(current_user: User = Depends(get_approved_user), date: str = None):
+    if date:
+        try:
+            target_date = datetime.strptime(date, "%Y-%m-%d").date()
+        except ValueError:
+            target_date = ist_today()
+    else:
+        target_date = ist_today()
+
+    start, end = date_to_ist_range(target_date)
     meals = await MealLog.find(
         MealLog.user_id == current_user.id,
         MealLog.logged_at >= start, MealLog.logged_at <= end
@@ -73,7 +78,7 @@ async def get_today_meals(current_user: User = Depends(get_approved_user)):
 
 @router.get("/history")
 async def get_history(current_user: User = Depends(get_approved_user), days: int = Query(7, ge=1, le=30)):
-    since = datetime.utcnow() - timedelta(days=days)
+    since = get_now_ist() - timedelta(days=days)
     meals = await MealLog.find(
         MealLog.user_id == current_user.id, MealLog.logged_at >= since
     ).sort("-logged_at").to_list()

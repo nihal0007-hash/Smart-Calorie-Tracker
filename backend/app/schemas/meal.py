@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional, List
+from datetime import datetime
 
 
 class MealLogRequest(BaseModel):
@@ -10,6 +11,7 @@ class MealLogRequest(BaseModel):
 
 
 class MealLogCreate(BaseModel):
+    logged_at: Optional[datetime] = None
     meal_name: str
     meal_description: Optional[str] = None
     meal_type: str

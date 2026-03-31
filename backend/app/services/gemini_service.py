@@ -18,27 +18,51 @@ async def _get_model():
         return genai.GenerativeModel(_cached_working_model)
 
     try:
-        # Dynamically discover models with robust attribute checking
+        # Strategy: Get the REAL list from your account and find the best 1.5-flash variant
+        print("Gemini: Discovering available models in your account...")
         model_objs = await asyncio.to_thread(lambda: list(genai.list_models()))
+        all_names = [m.name for m in model_objs]
+        flash_names = [n for n in all_names if "flash" in n.lower()]
         
-        # Filter and pick the first flash model
-        # We'll just look for 'flash' in name to be safe
-        flash_names = [m.name for m in model_objs if "flash" in m.name.lower()]
+        # Log discovered models for debugging
+        print(f"Gemini: Discovered Flash models: {flash_names}")
+
+        # 1. Look for the most stable and high-quota models using the names found in YOUR list.
+        # Your account uses 'gemini-flash-latest' for the stable 1.5 version.
+        preferred_stables = [
+            n for n in flash_names 
+            if "1.5" in n or n.endswith("gemini-flash-latest")
+        ]
+        
+        if preferred_stables:
+            # Prioritize 'gemini-flash-latest' specifically if found, as it's the 1,500 RPD one
+            preferred_stables.sort(key=lambda x: "gemini-flash-latest" in x, reverse=True)
+            _cached_working_model = preferred_stables[0]
+            print(f"Gemini: Selected high-quota model from your list: {_cached_working_model}")
+            return genai.GenerativeModel(_cached_working_model)
+
+        # 2. Try 2.0-flash before 2.5 (usually 2.0 has higher limits than 2.5 preview)
+        preferred_2_0 = [n for n in flash_names if "2.0" in n]
+        if preferred_2_0:
+            _cached_working_model = preferred_2_0[0]
+            print(f"Gemini: Falling back to 2.0-flash: {_cached_working_model}")
+            return genai.GenerativeModel(_cached_working_model)
+
+        # 3. Last resort: whatever flash is there (we avoid 2.5 if possible)
+        remaining_flash = [n for n in flash_names if "2.5" not in n]
+        if remaining_flash:
+            _cached_working_model = remaining_flash[0]
+            return genai.GenerativeModel(_cached_working_model)
+        
         if flash_names:
-            # Prefer '1.5-flash' if it exists in any form, else first flash
-            preferred = [n for n in flash_names if "1.5" in n]
-            _cached_working_model = preferred[0] if preferred else flash_names[0]
-            print(f"Gemini: Using discovered flash model {_cached_working_model}")
+            _cached_working_model = flash_names[0]
             return genai.GenerativeModel(_cached_working_model)
-        
-        if model_objs:
-            _cached_working_model = model_objs[0].name
-            return genai.GenerativeModel(_cached_working_model)
+
     except Exception as e:
-        print(f"Gemini Discovery Error (falling back): {e}")
+        print(f"Gemini Discovery Error: {e}")
     
-    # Absolute fallback to standard name
-    _cached_working_model = "gemini-1.5-flash"
+    # Absolute fallback guess if list_models itself failed
+    _cached_working_model = "models/gemini-1.5-flash"
     return genai.GenerativeModel(_cached_working_model)
 
 

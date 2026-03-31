@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { analyzeMeal, logMeal } from '../services/api'
 import HealthBadge from '../components/HealthBadge'
 import './LogMeal.css'
@@ -12,7 +12,14 @@ const MEAL_TYPES = [
 ]
 
 export default function LogMeal() {
-  const [form, setForm] = useState({ meal_name: '', meal_description: '', meal_type: 'snack' })
+  const [searchParams] = useSearchParams()
+  const customDate = searchParams.get('date')
+
+  const [form, setForm] = useState({ 
+    meal_name: '', 
+    meal_description: '', 
+    meal_type: 'snack'
+  })
   const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -61,7 +68,12 @@ export default function LogMeal() {
     setLoading(true)
     try {
       // Don't log the images to the DB as per privacy requirement
-      const { images: _, ...dataToLog } = result
+      const { images: _, ...resultData } = result
+      // If we have a custom date, we need to log for that date
+      const dataToLog = {
+        ...resultData,
+        logged_at: customDate ? new Date(customDate).toISOString() : undefined
+      }
       await logMeal(dataToLog)
       navigate('/dashboard')
     } catch (err) {
@@ -82,7 +94,10 @@ export default function LogMeal() {
       <div className="container-md">
         <div className="lm-header">
           <div>
-            <h2>🍽️ Log a Meal</h2>
+            <div className="flex items-center gap-3">
+              <h2 style={{ margin: 0 }}>🍽️ Log a Meal</h2>
+              {customDate && <span className="tag tag-purple">For {new Date(customDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span>}
+            </div>
             <p className="text-secondary">Enter your meal and Gemini AI will analyze it for you.</p>
           </div>
         </div>

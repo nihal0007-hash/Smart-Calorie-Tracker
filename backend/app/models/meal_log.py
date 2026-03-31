@@ -2,6 +2,7 @@ from beanie import Document, PydanticObjectId
 from pydantic import Field
 from typing import Optional, List
 from datetime import datetime
+from app.core.timezone import get_now_ist
 
 
 class MealLog(Document):
@@ -9,7 +10,7 @@ class MealLog(Document):
     meal_name: str
     meal_description: Optional[str] = None
     meal_type: str = "snack"
-    logged_at: datetime = Field(default_factory=datetime.utcnow)
+    logged_at: datetime = Field(default_factory=get_now_ist)
     calories: float = 0
     protein_g: float = 0
     carbs_g: float = 0

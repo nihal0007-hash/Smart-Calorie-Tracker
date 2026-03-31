@@ -3,15 +3,22 @@ from datetime import datetime, timedelta
 from app.models.meal_log import MealLog
 from app.models.user import User
 from app.core.dependencies import get_current_user
+from app.core.timezone import ist_today, get_now_ist, date_to_ist_range, ensure_ist
 
 router = APIRouter(prefix="/dashboard", tags=["dashboard"])
 
 
 @router.get("/summary")
-async def get_summary(current_user: User = Depends(get_current_user)):
-    today = datetime.utcnow().date()
-    start = datetime(today.year, today.month, today.day, 0, 0, 0)
-    end = datetime(today.year, today.month, today.day, 23, 59, 59)
+async def get_summary(current_user: User = Depends(get_current_user), date: str = None):
+    if date:
+        try:
+            target_date = datetime.strptime(date, "%Y-%m-%d").date()
+        except ValueError:
+            target_date = ist_today()
+    else:
+        target_date = ist_today()
+
+    start, end = date_to_ist_range(target_date)
 
     meals = await MealLog.find(
         MealLog.user_id == current_user.id,
@@ -23,7 +30,7 @@ async def get_summary(current_user: User = Depends(get_current_user)):
     avg_hs = (sum(m.health_score for m in meals) / len(meals)) if meals else 0
 
     return {
-        "date": today.isoformat(),
+        "date": target_date.isoformat(),
         "total_calories": round(total_cal, 1),
         "total_protein_g": round(sum(m.protein_g for m in meals), 1),
         "total_carbs_g": round(sum(m.carbs_g for m in meals), 1),
@@ -39,22 +46,30 @@ async def get_summary(current_user: User = Depends(get_current_user)):
 
 @router.get("/weekly")
 async def get_weekly(current_user: User = Depends(get_current_user)):
-    today = datetime.utcnow().date()
+    today = ist_today()
+    start_of_week, _ = date_to_ist_range(today - timedelta(days=6))
+    _, end_of_today = date_to_ist_range(today)
+
+    # One single query for the entire week
+    all_meals = await MealLog.find(
+        MealLog.user_id == current_user.id,
+        MealLog.logged_at >= start_of_week,
+        MealLog.logged_at <= end_of_today
+    ).to_list()
+
     labels, calories, protein, carbs, fat = [], [], [], [], []
 
     for i in range(6, -1, -1):
         day = today - timedelta(days=i)
-        s = datetime(day.year, day.month, day.day, 0, 0, 0)
-        e = datetime(day.year, day.month, day.day, 23, 59, 59)
-        meals = await MealLog.find(
-            MealLog.user_id == current_user.id,
-            MealLog.logged_at >= s, MealLog.logged_at <= e
-        ).to_list()
+        # Filter meals for this specific day in memory
+        s, e = date_to_ist_range(day)
+        day_meals = [m for m in all_meals if s <= ensure_ist(m.logged_at) <= e]
+        
         labels.append(day.strftime("%a %d"))
-        calories.append(round(sum(m.calories for m in meals), 1))
-        protein.append(round(sum(m.protein_g for m in meals), 1))
-        carbs.append(round(sum(m.carbs_g for m in meals), 1))
-        fat.append(round(sum(m.fat_g for m in meals), 1))
+        calories.append(round(sum(m.calories for m in day_meals), 1))
+        protein.append(round(sum(m.protein_g for m in day_meals), 1))
+        carbs.append(round(sum(m.carbs_g for m in day_meals), 1))
+        fat.append(round(sum(m.fat_g for m in day_meals), 1))
 
     return {
         "labels": labels, "calories": calories,

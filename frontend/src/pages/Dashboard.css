@@ -1,4 +1,107 @@
 .dash-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
+.dash-header-actions { display: flex; align-items: center; gap: 12px; }
+
+.date-picker-wrapper { 
+  position: relative; 
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  padding: 0 12px;
+  height: 42px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  min-width: 160px;
+}
+
+.date-picker-wrapper:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 212, 170, 0.15);
+}
+
+.calendar-picker-icon {
+  font-size: 1.1rem;
+  margin-right: 10px;
+  pointer-events: none;
+}
+
+.date-picker-input {
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  outline: none;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  appearance: none;
+}
+
+/* Hide the default browser indicator while keeping it clickable over the whole button */
+.date-picker-input::-webkit-calendar-picker-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.tag-live, .tag-history {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 100px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tag-live {
+  background: rgba(0, 212, 170, 0.1);
+  color: var(--accent);
+  border: 1px solid rgba(0, 212, 170, 0.3);
+}
+
+.tag-history {
+  background: rgba(139, 92, 246, 0.1);
+  color: #a78bfa;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.tag-reset-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--text-primary);
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 100px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tag-reset-btn:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: black;
+  transform: translateY(-1px);
+}
+
+.btn-icon-pulse {
+  display: none; /* Removed as per user request */
+}
+
 .warning-banner {
   padding: 14px 20px; border-radius: var(--radius-sm);
   background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3);
@@ -14,6 +117,8 @@
 .empty-meals { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; padding: 48px !important; }
 
 @media (max-width: 768px) {
+  .dash-header { flex-direction: column; align-items: flex-start; }
+  .dash-header-actions { width: 100%; justify-content: space-between; }
   .overview-main { gap: 20px; }
   .overview-stats { gap: 16px; justify-content: space-between; }
   .macro-rings { gap: 16px; }
@@ -22,6 +127,7 @@
 }
 
 @media (max-width: 480px) {
+  .dash-header-actions { flex-direction: column; align-items: stretch; gap: 8px; }
   .overview-stats { gap: 12px; }
   .overview-stat { min-width: 60px; }
   .empty-meals { padding: 32px 16px !important; }
