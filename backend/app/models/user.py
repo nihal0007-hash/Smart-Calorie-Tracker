@@ -17,6 +17,7 @@ class User(Document):
     allergies: List[str] = Field(default_factory=list)
     daily_calorie_goal: Optional[int] = 2000
     onboarding_complete: bool = False
+    approved: bool = False
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
     class Settings:

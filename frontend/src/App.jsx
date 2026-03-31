@@ -27,19 +27,23 @@ function OnboardingRoute({ children }) {
 import { useEffect } from 'react'
 import { registerWakingStateSetter } from './services/api'
 import ServerWakeUpOverlay from './components/ServerWakeUpOverlay'
+import ApprovalPending from './components/ApprovalPending'
 
 function AppLayout({ children }) {
-  const { token, serverWakingUp, setServerWakingUp } = useAuth()
+  const { user, token, serverWakingUp, setServerWakingUp } = useAuth()
 
   useEffect(() => {
     registerWakingStateSetter(setServerWakingUp)
   }, [setServerWakingUp])
 
+  // If onboarding is done but not approved, show the pending screen
+  const isPending = token && user && user.onboarding_complete && !user.approved
+
   return (
     <>
-      {token && <Navbar />}
+      {token && user && user.onboarding_complete && user.approved && <Navbar />}
       <ServerWakeUpOverlay isOpen={serverWakingUp} />
-      {children}
+      {isPending ? <ApprovalPending /> : children}
     </>
   )
 }

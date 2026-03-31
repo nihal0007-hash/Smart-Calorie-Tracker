@@ -11,6 +11,7 @@ def _user_response(user: User) -> dict:
     return {
         "id": str(user.id), "email": user.email, "name": user.name,
         "onboarding_complete": user.onboarding_complete,
+        "approved": user.approved,
         "daily_calorie_goal": user.daily_calorie_goal,
         "diseases": user.diseases, "allergies": user.allergies,
         "age": user.age, "gender": user.gender,

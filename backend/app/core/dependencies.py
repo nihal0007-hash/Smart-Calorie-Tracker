@@ -28,3 +28,12 @@ async def get_current_user(
     if user is None:
         raise exc
     return user
+
+
+async def get_approved_user(user: User = Depends(get_current_user)) -> User:
+    if not user.approved:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="account needs approval by the owner"
+        )
+    return user

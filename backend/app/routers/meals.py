@@ -4,7 +4,7 @@ from beanie import PydanticObjectId
 from app.models.meal_log import MealLog
 from app.models.user import User
 from app.schemas.meal import MealLogRequest
-from app.core.dependencies import get_current_user
+from app.core.dependencies import get_current_user, get_approved_user
 from app.services.gemini_service import analyze_meal
 
 router = APIRouter(prefix="/meals", tags=["meals"])
@@ -34,7 +34,7 @@ from app.schemas.meal import MealLogRequest, MealLogCreate
 
 
 @router.post("/analyze")
-async def analyze_pre_log(data: MealLogRequest, current_user: User = Depends(get_current_user)):
+async def analyze_pre_log(data: MealLogRequest, current_user: User = Depends(get_approved_user)):
     user_profile = {
         "age": current_user.age, "gender": current_user.gender,
         "height_cm": current_user.height_cm, "weight_kg": current_user.weight_kg,
@@ -52,7 +52,7 @@ async def analyze_pre_log(data: MealLogRequest, current_user: User = Depends(get
 
 
 @router.post("/log")
-async def log_meal(meal_data: MealLogCreate, current_user: User = Depends(get_current_user)):
+async def log_meal(meal_data: MealLogCreate, current_user: User = Depends(get_approved_user)):
     meal = MealLog(
         user_id=current_user.id, 
         **meal_data.dict()
@@ -62,7 +62,7 @@ async def log_meal(meal_data: MealLogCreate, current_user: User = Depends(get_cu
 
 
 @router.get("/today")
-async def get_today_meals(current_user: User = Depends(get_current_user)):
+async def get_today_meals(current_user: User = Depends(get_approved_user)):
     start, end = _today_range()
     meals = await MealLog.find(
         MealLog.user_id == current_user.id,
@@ -72,7 +72,7 @@ async def get_today_meals(current_user: User = Depends(get_current_user)):
 
 
 @router.get("/history")
-async def get_history(current_user: User = Depends(get_current_user), days: int = Query(7, ge=1, le=30)):
+async def get_history(current_user: User = Depends(get_approved_user), days: int = Query(7, ge=1, le=30)):
     since = datetime.utcnow() - timedelta(days=days)
     meals = await MealLog.find(
         MealLog.user_id == current_user.id, MealLog.logged_at >= since
@@ -81,7 +81,7 @@ async def get_history(current_user: User = Depends(get_current_user), days: int 
 
 
 @router.delete("/{meal_id}")
-async def delete_meal(meal_id: str, current_user: User = Depends(get_current_user)):
+async def delete_meal(meal_id: str, current_user: User = Depends(get_approved_user)):
     meal = await MealLog.get(PydanticObjectId(meal_id))
     if not meal or meal.user_id != current_user.id:
         raise HTTPException(status_code=404, detail="Meal not found")
