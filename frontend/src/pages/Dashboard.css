@@ -1,0 +1,28 @@
+.dash-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
+.warning-banner {
+  padding: 14px 20px; border-radius: var(--radius-sm);
+  background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3);
+  color: var(--warning); font-size: 0.9rem; font-weight: 500; margin-bottom: 20px;
+}
+.dash-overview { margin-bottom: 24px; }
+.overview-main { display: flex; align-items: center; gap: 48px; flex-wrap: wrap; }
+.overview-stats { display: flex; gap: 32px; flex-wrap: wrap; flex: 1; }
+.overview-stat { min-width: 80px; }
+.macro-section, .chart-section, .meals-section { margin-bottom: 32px; }
+.section-title { margin-bottom: 16px; color: var(--text-primary); }
+.macro-rings { display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 24px; }
+.empty-meals { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; padding: 48px !important; }
+
+@media (max-width: 768px) {
+  .overview-main { gap: 20px; }
+  .overview-stats { gap: 16px; justify-content: space-between; }
+  .macro-rings { gap: 16px; }
+  .dash-header h2 { font-size: 1.3rem; }
+  .macro-section, .chart-section, .meals-section { margin-bottom: 20px; }
+}
+
+@media (max-width: 480px) {
+  .overview-stats { gap: 12px; }
+  .overview-stat { min-width: 60px; }
+  .empty-meals { padding: 32px 16px !important; }
+}

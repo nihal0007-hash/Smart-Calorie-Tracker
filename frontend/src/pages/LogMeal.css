@@ -1,0 +1,47 @@
+.lm-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+
+.meal-type-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.meal-type-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 14px 12px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.03);
+  color: var(--text-secondary);
+  font-family: inherit; font-size: 0.85rem; font-weight: 500;
+  cursor: pointer; transition: all var(--transition);
+}
+.meal-type-btn:hover { border-color: var(--border-accent); color: var(--text-primary); }
+.meal-type-btn.selected { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+.meal-type-btn span:first-child { font-size: 1.4rem; }
+
+.result-card { display: flex; flex-direction: column; gap: 16px; }
+.result-title-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+.result-calories { display: flex; align-items: baseline; gap: 8px; }
+.result-cal-num { font-size: 3rem; font-weight: 800; color: var(--accent); line-height: 1; }
+.result-cal-unit { font-size: 1rem; color: var(--text-muted); }
+
+.result-macros { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 12px; }
+.result-macro {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 16px 12px; border-radius: 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid;
+}
+.result-macro small { font-size: 0.65rem; color: var(--text-muted); }
+
+.warning-item {
+  padding: 10px 14px; border-radius: 8px;
+  background: rgba(245,158,11,0.08); border-left: 3px solid var(--warning);
+  color: var(--text-secondary); font-size: 0.875rem;
+}
+
+.result-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.result-actions .btn { flex: 1; justify-content: center; }
+
+@media (max-width: 640px) {
+  .meal-type-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .result-cal-num { font-size: 2.2rem; }
+  .result-macros { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .result-actions { flex-direction: column; }
+  .result-actions .btn { flex: unset; }
+}

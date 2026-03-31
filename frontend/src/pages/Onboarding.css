@@ -1,0 +1,50 @@
+.onboarding-page {
+  min-height: 100vh; display: flex;
+  align-items: center; justify-content: center;
+  padding: 24px;
+}
+.onboarding-card {
+  width: 100%; max-width: 520px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  backdrop-filter: blur(20px);
+}
+.ob-header { margin-bottom: 32px; }
+.ob-step-badge {
+  display: inline-block; padding: 4px 12px; border-radius: 100px;
+  background: var(--accent-dim); color: var(--accent);
+  font-size: 0.75rem; font-weight: 600; margin-bottom: 12px;
+}
+.ob-progress-bar {
+  height: 4px; border-radius: 2px;
+  background: rgba(255,255,255,0.08);
+  margin-top: 16px; overflow: hidden;
+}
+.ob-progress-fill {
+  height: 100%; border-radius: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-purple));
+  transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+.ob-form { display: flex; flex-direction: column; gap: 24px; }
+.ob-actions { display: flex; gap: 12px; margin-top: 8px; }
+
+.chip-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.toggle-chip {
+  padding: 8px 16px; border-radius: 100px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.04);
+  color: var(--text-secondary);
+  font-family: inherit; font-size: 0.85rem; font-weight: 500;
+  cursor: pointer; transition: all var(--transition);
+}
+.toggle-chip:hover { border-color: var(--border-accent); color: var(--text-primary); }
+.toggle-chip.selected { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+@media (max-width: 480px) {
+  .onboarding-page { padding: 16px; align-items: flex-start; padding-top: 32px; }
+  .onboarding-card { padding: 28px 20px; }
+  .ob-actions { flex-direction: column-reverse; }
+  .ob-actions .btn { width: 100%; justify-content: center; }
+}
