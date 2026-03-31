@@ -3,11 +3,11 @@
   display: flex; align-items: flex-start; justify-content: space-between;
   padding: 16px 20px; gap: 12px; flex-wrap: wrap;
 }
-.meal-card-left { display: flex; align-items: flex-start; gap: 12px; flex: 1; min-width: 0; }
+.meal-card-left { display: flex; align-items: flex-start; gap: 12px; flex: 2; min-width: 0; }
 .meal-type-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
 .meal-card-name { font-weight: 600; font-size: 0.95rem; white-space: normal; line-height: 1.4; word-break: break-word; }
 .meal-card-meta { display: flex; align-items: center; gap: 6px; margin-top: 2px; flex-wrap: wrap; }
-.meal-card-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; margin-left: auto; }
+.meal-card-right { display: flex; align-items: center; justify-content: flex-end; gap: 12px; flex: 1; flex-shrink: 0; margin-left: 12px; }
 .meal-cal { font-size: 1rem; font-weight: 700; color: var(--accent); }
 .meal-cal span { font-size: 0.7rem; color: var(--text-muted); font-weight: 400; }
 .expand-icon { color: var(--text-muted); font-size: 0.7rem; }
